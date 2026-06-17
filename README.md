@@ -4,30 +4,6 @@ A secure token-based file sharing platform built with the MERN stack and Supabas
 
 CloudVault allows users to upload files, organize them into folders, generate unique share tokens, and control access through public/private visibility settings. File contents are stored in Supabase Storage while metadata is managed through MongoDB.
 
----
-
-## Tech Stack
-
-### Frontend
-- HTML
-- CSS
-- JavaScript
-
-### Backend
-- Node.js
-- Express.js
-
-### Database
-- MongoDB
-- Mongoose
-
-### Storage
-- Supabase Storage
-
-### Additional Libraries
-- Multer
-- dotenv
-- cors
 
 ---
 
