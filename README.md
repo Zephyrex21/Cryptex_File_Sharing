@@ -4,6 +4,37 @@ A secure token-based file sharing platform built with the MERN stack and Supabas
 
 CloudVault allows users to upload files, organize them into folders, generate unique share tokens, and control access through public/private visibility settings. File contents are stored in Supabase Storage while metadata is managed through MongoDB.
 
+---
+
+# Features
+
+### File Management
+- Upload files securely
+- Download files
+- Preview supported files
+- Rename files
+- Delete files
+
+### Folder Management
+- Create folders
+- Organize files into folders
+- Rename folders
+- Delete folders
+
+### Token-Based Sharing
+- Unique share token generated for every file and folder
+- Access shared content without exposing database IDs
+- Easy and secure sharing mechanism
+
+### Visibility Controls
+- Public files/folders
+- Private files/folders
+- Toggle visibility anytime
+
+### Storage Architecture
+- MongoDB stores metadata
+- Supabase Storage stores actual files
+- Express API handles uploads and access control
 
 ---
 
@@ -62,36 +93,6 @@ SUPABASE_BUCKET=
 PORT=3000
 ```
 ---
-
-# Features
-
-### File Management
-- Upload files securely
-- Download files
-- Preview supported files
-- Rename files
-- Delete files
-
-### Folder Management
-- Create folders
-- Organize files into folders
-- Rename folders
-- Delete folders
-
-### Token-Based Sharing
-- Unique share token generated for every file and folder
-- Access shared content without exposing database IDs
-- Easy and secure sharing mechanism
-
-### Visibility Controls
-- Public files/folders
-- Private files/folders
-- Toggle visibility anytime
-
-### Storage Architecture
-- MongoDB stores metadata
-- Supabase Storage stores actual files
-- Express API handles uploads and access control
 
 
 ## API Routes
