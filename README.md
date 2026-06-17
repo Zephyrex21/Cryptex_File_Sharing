@@ -6,7 +6,7 @@ CloudVault allows users to upload files, organize them into folders, generate un
 
 ---
 
-Live Preview : https://cryptex-file-sharing.onrender.com
+Live Preview : https://cryptex-file-sharing.onrender.com/
 
 ---
 
