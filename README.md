@@ -4,11 +4,11 @@ A secure token-based file sharing platform built with the MERN stack and Supabas
 
 CloudVault allows users to upload files, organize them into folders, generate unique share tokens, and control access through public/private visibility settings. File contents are stored in Supabase Storage while metadata is managed through MongoDB.
 
----
-
-Live Preview : https://cryptex-file-sharing.onrender.com/
-
----
+<p align="center">
+  <a href="https://cryptex-file-sharing.onrender.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Live-Demo-success?style=for-the-badge" alt="Live Demo">
+  </a>
+</p>
 
 
 # Features
