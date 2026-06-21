@@ -35,6 +35,11 @@ const fileSchema = new mongoose.Schema(
       default: "public",   // existing files stay visible — no disruption
     },
 
+    // Optional self-destruct for the token. null = never expires.
+    // Only enforced on token-lookup (getFileByToken) — going public clears it,
+    // since expiry is meaningless once something isn't gated behind a token.
+    tokenExpiresAt: { type: Date, default: null },
+
     // Optional — which folder this file belongs to (null = not in any folder)
     folderId: {
       type:    mongoose.Schema.Types.ObjectId,

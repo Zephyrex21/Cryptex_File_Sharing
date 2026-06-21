@@ -1,8 +1,28 @@
 import Folder from "../models/Folder.js";
 import File   from "../models/File.js";
 import { randomUUID } from "crypto";
+import { ZipArchive } from "archiver";
+import { Readable } from "stream";
 
 const generateToken = () => randomUUID().replace(/-/g, "").slice(0, 16);
+
+// Same defense-in-depth as fileUpload.js's sanitizeOriginalName — strip
+// control characters and cap length before anything reaches storage.
+const sanitizeFolderName = (name) =>
+  String(name).replace(/[\x00-\x1F\x7F]/g, "").slice(0, 255).trim();
+
+// ── Zip Slip protection ──────────────────────────────────────────────────────
+// originalName is client-supplied. A name like "../../evil.sh" used as a raw
+// zip entry path could escape the extraction folder on whoever downloads and
+// unzips it. Strip any directory components and traversal sequences, keeping
+// only a flat, safe basename.
+const sanitizeZipEntryName = (name) => {
+  // Take just the last path segment, stripping any / or \ separators —
+  // discards "../" and any other directory traversal entirely.
+  const base = String(name).split(/[\\/]/).pop() || "file";
+  // Belt-and-suspenders: also strip any leftover leading dots/traversal chars.
+  return base.replace(/^\.+/, "").trim() || "file";
+};
 
 // ── CREATE ─────────────────────────────────────────────────────────────────
 export const createFolder = async (req, res) => {
@@ -13,7 +33,7 @@ export const createFolder = async (req, res) => {
     }
 
     const folder = await Folder.create({
-      name:        name.trim(),
+      name:        sanitizeFolderName(name),
       visibility:  visibility || "public",
       shareToken:  generateToken(),
     });
@@ -37,22 +57,11 @@ export const getAllFolders = async (req, res) => {
       await Promise.all(needsToken.map(f => { f.shareToken = generateToken(); return f.save(); }));
     }
 
-    // The fileCount virtual counts raw refs, including individually-private files
-    // that getFolderById/getFolderByToken will exclude when the folder is opened.
-    // Override it here with a real count of only the PUBLIC files, so the badge
-    // shown in the folder list always matches what's actually visible inside.
-    const counts = await File.aggregate([
-      { $match: { folderId: { $in: folders.map(f => f._id) }, visibility: { $ne: 'private' } } },
-      { $group: { _id: '$folderId', count: { $sum: 1 } } },
-    ]);
-    const countMap = new Map(counts.map(c => [c._id.toString(), c.count]));
-    const foldersOut = folders.map(f => {
-      const obj = f.toObject({ virtuals: true });
-      obj.fileCount = countMap.get(f._id.toString()) || 0;
-      return obj;
-    });
-
-    res.status(200).json({ count: foldersOut.length, folders: foldersOut });
+    // fileCount intentionally reflects the TOTAL number of files assigned to this
+    // folder, regardless of each file's own public/private status. A file made
+    // private still belongs to the folder structurally — it's just not rendered
+    // inside the folder's contents until unlocked via its own token.
+    res.status(200).json({ count: folders.length, folders });
   } catch (e) { res.status(500).json({ message: e.message }); }
 };
 
@@ -96,6 +105,9 @@ export const getFolderByToken = async (req, res) => {
     if (!folder) {
       return res.status(404).json({ message: "Invalid token — folder not found" });
     }
+    if (folder.tokenExpiresAt && folder.tokenExpiresAt < new Date()) {
+      return res.status(410).json({ message: "This token has expired" });
+    }
 
     res.status(200).json({ folder });
   } catch (e) { res.status(500).json({ message: e.message }); }
@@ -111,7 +123,7 @@ export const renameFolder = async (req, res) => {
 
     const folder = await Folder.findByIdAndUpdate(
       req.params.id,
-      { name: name.trim() },
+      { name: sanitizeFolderName(name) },
       { new: true }
     );
     if (!folder) return res.status(404).json({ message: "Folder not found" });
@@ -124,14 +136,22 @@ export const renameFolder = async (req, res) => {
 // Body: { visibility: "public" | "private" }
 export const setFolderVisibility = async (req, res) => {
   try {
-    const { visibility } = req.body;
+    const { visibility, expiresIn, regenerateToken } = req.body;
     if (!["public", "private"].includes(visibility)) {
       return res.status(400).json({ message: "visibility must be 'public' or 'private'" });
     }
 
+    const update = { visibility };
+    if (visibility === "public") {
+      update.tokenExpiresAt = null;
+    } else if (expiresIn !== undefined) {
+      update.tokenExpiresAt = expiresIn > 0 ? new Date(Date.now() + expiresIn * 60000) : null;
+    }
+    if (regenerateToken) update.shareToken = generateToken();
+
     const folder = await Folder.findByIdAndUpdate(
       req.params.id,
-      { visibility },
+      update,
       { new: true }
     );
     if (!folder) return res.status(404).json({ message: "Folder not found" });
@@ -216,4 +236,71 @@ export const removeFileFromFolder = async (req, res) => {
 
     res.status(200).json({ message: "File removed from folder", folder });
   } catch (e) { res.status(500).json({ message: e.message }); }
+};
+
+// ── DOWNLOAD AS ZIP ──────────────────────────────────────────────────────────
+// Streams every (non-private) file in the folder as a single .zip — no temp
+// files written to disk, everything is piped straight through. Same access
+// rule as opening the folder: private folders need their token.
+export const downloadFolderZip = async (req, res) => {
+  try {
+    const folder = await Folder.findById(req.params.id).populate({
+      path: "files",
+      match: { visibility: { $ne: "private" } },
+    });
+    if (!folder) return res.status(404).json({ message: "Folder not found" });
+
+    if (folder.visibility === "private") {
+      const provided = req.query.token || req.headers["x-share-token"];
+      if (!provided || provided !== folder.shareToken) {
+        return res.status(403).json({ message: "Private folder — valid token required" });
+      }
+    }
+    if (folder.tokenExpiresAt && folder.tokenExpiresAt < new Date() && folder.visibility === "private") {
+      return res.status(410).json({ message: "This token has expired" });
+    }
+
+    const files = folder.files || [];
+    if (!files.length) {
+      return res.status(404).json({ message: "No files available to download in this folder" });
+    }
+
+    const safeName = (folder.name || "folder").replace(/[^a-z0-9_\-]/gi, "_");
+    res.setHeader("Content-Type", "application/zip");
+    res.setHeader("Content-Disposition", `attachment; filename="${safeName}.zip"`);
+
+    const archive = new ZipArchive({ zlib: { level: 9 } });
+    archive.on("error", (err) => {
+      if (!res.headersSent) res.status(500).json({ message: err.message });
+      else res.destroy();
+    });
+    archive.pipe(res);
+
+    // Guard against two files sharing the same name inside the zip
+    const usedNames = new Set();
+    for (const file of files) {
+      const sourceUrl = file.fileUrl || file.cloudinaryUrl;
+      if (!sourceUrl) continue;
+      try {
+        const response = await fetch(sourceUrl);
+        if (!response.ok || !response.body) continue;
+        let name = sanitizeZipEntryName(file.originalName || "file");
+        if (usedNames.has(name)) {
+          const dot = name.lastIndexOf(".");
+          const ext = dot > 0 ? name.slice(dot) : "";
+          const base = dot > 0 ? name.slice(0, dot) : name;
+          let n = 2;
+          while (usedNames.has(`${base} (${n})${ext}`)) n++;
+          name = `${base} (${n})${ext}`;
+        }
+        usedNames.add(name);
+        archive.append(Readable.fromWeb(response.body), { name });
+      } catch {
+        // Skip a file that fails to fetch rather than aborting the whole zip
+      }
+    }
+    await archive.finalize();
+  } catch (e) {
+    if (!res.headersSent) res.status(500).json({ message: e.message });
+  }
 };

@@ -18,12 +18,25 @@ connectDB();
 
 app.use(express.json());
 
-// ── CORS ───────────────────────────────────────────────────────────────────
+// ── Security headers & CORS ─────────────────────────────────────────────────
+// CORS is intentionally restrictive: the frontend is served same-origin via
+// express.static below, so the API needs zero cross-origin access for normal
+// operation. Set ALLOWED_ORIGIN in .env only if you split frontend/backend
+// across different domains in the future — until then, this stays locked down.
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.removeHeader("X-Frame-Options");
+  const allowedOrigin = process.env.ALLOWED_ORIGIN;
+  if (allowedOrigin) {
+    res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  }
+  // Clickjacking protection — this app has no legitimate reason to ever be framed.
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Content-Security-Policy", "frame-ancestors 'none'; object-src 'none'");
+  // Stops browsers from "sniffing" a file's real content and overriding the
+  // Content-Type we declare — relevant since uploaded-file MIME types
+  // ultimately come from the client at upload time.
+  res.setHeader("X-Content-Type-Options", "nosniff");
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });

@@ -1,5 +1,6 @@
 import express from "express";
 import multer from "multer";
+import rateLimit from "express-rate-limit";
 import {
   uploadFile,
   getAllFiles,
@@ -13,6 +14,28 @@ import {
 } from "../controllers/fileUpload.js";
 
 const router = express.Router();
+
+// Token lookup is the one endpoint where brute-forcing matters most — a token
+// IS the access control here, so this limiter is the main defense against
+// scripted guessing. 64-bit tokens make brute force computationally
+// infeasible already, but rate limiting closes the gap regardless.
+const tokenLookupLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many token attempts — please wait a moment and try again" },
+});
+
+// Loose cap on uploads to blunt basic storage/bandwidth abuse, well above
+// anything a real person would trigger by hand.
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many uploads in a short time — please slow down" },
+});
 
 const ALLOWED = [
   "image/jpeg","image/png","image/gif","image/webp",
@@ -37,11 +60,11 @@ const handleUpload = (req, res, next) =>
 
 // ── File routes ────────────────────────────────────────────────────────────
 
-router.post("/upload",            handleUpload, uploadFile);
+router.post("/upload",            uploadLimiter, handleUpload, uploadFile);
 router.get("/",                   getAllFiles);
 
 // Token lookup — must come before /:id routes (specific before generic)
-router.get("/token/:token",       getFileByToken);
+router.get("/token/:token",       tokenLookupLimiter, getFileByToken);
 
 router.get("/:id/preview",        previewFile);
 router.get("/:id/download",       downloadFile);

@@ -338,7 +338,7 @@ footer{background:var(--surf);border-top:.5px solid var(--b1);padding:28px 24px}
 
 /* Toasts */
 #toasts{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
-.toast{background:var(--surf2);backdrop-filter:blur(28px);border:.5px solid var(--b2);color:var(--t1);padding:10px 20px;border-radius:99px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:9px;box-shadow:var(--sh3);animation:toastIn .28s var(--spring) both;white-space:nowrap}
+.toast{background:var(--surf2);backdrop-filter:blur(28px);border:.5px solid var(--b2);color:var(--t1);padding:10px 20px;border-radius:99px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:9px;box-shadow:var(--sh3);animation:toastIn .28s var(--spring) both;white-space:nowrap;pointer-events:auto}
 .toast.out{animation:toastOut .2s var(--ease) forwards}
 .td{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .toast.success .td{background:var(--grn);box-shadow:0 0 8px var(--grn)}
@@ -363,6 +363,16 @@ footer{background:var(--surf);border-top:.5px solid var(--b1);padding:28px 24px}
 .cact-vis-pub:hover{background:var(--reds);color:var(--red)}
 .cact-vis-priv{color:var(--acc)}
 .cact-vis-priv:hover{background:var(--accs);color:var(--acc)}
+.new-badge{display:inline-flex;align-items:center;background:linear-gradient(135deg,var(--acc),#8b5cf6);color:#fff;font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 6px;border-radius:6px;position:absolute;top:8px;left:8px;z-index:2;box-shadow:0 2px 8px rgba(92,86,232,.4)}
+.new-badge-list{display:inline-flex;align-items:center;background:linear-gradient(135deg,var(--acc),#8b5cf6);color:#fff;font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 6px;border-radius:6px;margin-left:6px}
+.toast-undo-btn{background:var(--acc);color:#fff;border:none;border-radius:99px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-left:4px;font-family:var(--font);transition:filter .15s}
+.toast-undo-btn:hover{filter:brightness(1.15)}
+.privrev-expiry{margin:0 24px 8px;padding:10px 14px;background:var(--surf3);border:.5px solid var(--b1);border-radius:var(--r2)}
+.privrev-expiry-label{font-size:12px;color:var(--t3);margin-bottom:8px}
+.privrev-expiry-label strong{color:var(--t1);font-weight:700}
+.privrev-expiry-btns{display:flex;gap:6px}
+.privrev-expiry-btns button{flex:1;padding:6px 0;border-radius:8px;border:.5px solid var(--b2);background:var(--surf2);color:var(--t2);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;font-family:var(--font)}
+.privrev-expiry-btns button:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
 .tmod-act{width:38px;height:38px;border-radius:10px;border:.5px solid var(--b2);background:transparent;color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
 .tmod-act svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tmod-act:active{transform:scale(.9)}
@@ -414,6 +424,12 @@ footer{background:var(--surf);border-top:.5px solid var(--b1);padding:28px 24px}
 .la-rmfolder{background:var(--reds);color:var(--red)}.la-rmfolder:hover{background:var(--red);color:#fff}
 /* ── Folder section controls ──────────────────────────────────────────── */
 .folder-ctrls{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.folder-search-input{flex:1;min-width:160px;max-width:280px;padding:9px 14px;border-radius:99px;border:.5px solid var(--b2);background:var(--surf2);color:var(--t1);font-size:13px;font-family:var(--font);outline:none;transition:border-color .15s}
+.folder-search-input:focus{border-color:var(--acc)}
+.btn-zip-all{padding:9px 18px;border-radius:99px;border:.5px solid var(--b2);background:var(--surf2);color:var(--t1);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .15s;flex-shrink:0;display:flex;align-items:center;gap:6px}
+.btn-zip-all:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
+.btn-zip-all svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
 .folder-crumb{flex:1;font-size:18px;font-weight:700;letter-spacing:-.3px;display:flex;align-items:center;gap:8px;min-width:0}
 .crumb-sep{color:var(--t3);font-weight:400}
 .crumb-back{width:32px;height:32px;border-radius:50%;border:.5px solid var(--b2);background:var(--surf);color:var(--t1);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s;flex-shrink:0}
@@ -587,6 +603,8 @@ footer{background:var(--surf);border-top:.5px solid var(--b1);padding:28px 24px}
   <div id="foldersSection" style="display:none">
     <div class="folder-ctrls">
       <div class="folder-crumb" id="folderCrumb">All Folders</div>
+      <input id="folderSearchInput" type="text" placeholder="Search folders…" class="folder-search-input" autocomplete="off"/>
+      <button class="btn-zip-all" id="btnDownloadAllZip" style="display:none" onclick="downloadCurFolderZip()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download All</button>
       <button class="btn-new-folder" id="btnNewFolder" onclick="showCreateFolder()">+ New Folder</button>
     </div>
     <div id="folderGrid"></div>
@@ -628,7 +646,9 @@ footer{background:var(--surf);border-top:.5px solid var(--b1);padding:28px 24px}
     <div class="rm-item"><div class="rm-dot rm-done">✓</div><div><h4>Token-Based File Sharing</h4><p>16-char token per file — paste to access, no account needed</p></div></div>
     <div class="rm-item"><div class="rm-dot rm-done">✓</div><div><h4>Private / Public Visibility</h4><p>Toggle any file or folder private — disappears from gallery instantly</p></div></div>
     <div class="rm-item"><div class="rm-dot rm-done">✓</div><div><h4>Folder Collections with Tokens</h4><p>Group files, share entire folders with a single token</p></div></div>
-    <div class="rm-item"><div class="rm-dot rm-soon">→</div><div><h4>Expiring Tokens</h4><p>Time-limited access — tokens that auto-expire after N hours</p></div></div>
+    <div class="rm-item"><div class="rm-dot rm-done">✓</div><div><h4>Expiring Tokens</h4><p>Time-limited access — set a token to auto-expire in 1h, 24h, or 7d</p></div></div>
+    <div class="rm-item"><div class="rm-dot rm-done">✓</div><div><h4>Token Regeneration & Folder ZIP Downloads</h4><p>Rotate a leaked token instantly; download an entire folder in one click</p></div></div>
+    <div class="rm-item"><div class="rm-dot rm-soon">→</div><div><h4>Bulk Actions</h4><p>Select multiple files at once for batch download, delete, or move</p></div></div>
     <div class="rm-item"><div class="rm-dot rm-future">○</div><div><h4>User Vaults</h4><p>Authentication so each user manages their own private vault</p></div></div>
   </div>
 </div>
@@ -691,7 +711,22 @@ footer{background:var(--surf);border-top:.5px solid var(--b1);padding:28px 24px}
       <code id="prm-token">…</code>
       <button class="privrev-copy" onclick="copyPrivToken()">Copy</button>
     </div>
-    <div class="privrev-hint">Token was auto-copied. Share it to grant access via the token input.</div>
+    <div class="privrev-hint">Token was auto-copied. Share it to grant access via the token input — or send a ready-to-click link:</div>
+    <div class="privrev-foot" style="padding-top:0">
+      <button class="btn-cancel" style="flex:1" onclick="copyPrivLink()">🔗 Copy shareable link instead</button>
+    </div>
+    <div class="privrev-expiry">
+      <div class="privrev-expiry-label">Token expiry: <strong id="prm-expiry-status">Never</strong></div>
+      <div class="privrev-expiry-btns">
+        <button onclick="setPrivExpiry(60)">1h</button>
+        <button onclick="setPrivExpiry(1440)">24h</button>
+        <button onclick="setPrivExpiry(10080)">7d</button>
+        <button onclick="setPrivExpiry(0)">Never</button>
+      </div>
+    </div>
+    <div class="privrev-foot" style="padding-top:0">
+      <button class="btn-cancel" style="flex:1" onclick="regenPrivToken()">🔄 Regenerate token (invalidates the old one)</button>
+    </div>
     <div class="privrev-foot">
       <button class="btn-acc" style="flex:1" onclick="document.getElementById('privRevealModal').classList.remove('open')">Got it ✓</button>
     </div>
@@ -745,7 +780,8 @@ footer{background:var(--surf);border-top:.5px solid var(--b1);padding:28px 24px}
 const API='/api/files';
 const FOLDERS_API='/api/folders';
 let allFiles=[],curF='all',curS='newest',curV='grid',searchQ='';
-let allFolders=[],curSection='files',curFolder=null,folderCtx=null,atfFileId=null,tokenModalFile=null,tokenModalFolder=null;
+let allFolders=[],curSection='files',curFolder=null,folderCtx=null,atfFileId=null,tokenModalFile=null,tokenModalFolder=null,folderSearchQ='';
+let privRevealCtx={id:null,type:null}; // tracks which file/folder the privRevealModal is currently showing
 
 // ── Nav scroll (renamed to navTo to avoid conflict with window.scrollTo) ──
 function navTo(id){
@@ -779,6 +815,7 @@ document.getElementById('themeBtn').onclick=()=>{
 
 // ── Search ─────────────────────────────────────────────────────────────────
 document.getElementById('sInput').addEventListener('input',e=>{searchQ=e.target.value.trim();renderAll();});
+document.getElementById('folderSearchInput').addEventListener('input',e=>{folderSearchQ=e.target.value.trim();renderFolders();});
 document.getElementById('tInput').addEventListener('keydown',e=>{if(e.key==='Enter')accessByToken();});
 document.getElementById('tokenModal').addEventListener('click',e=>{if(e.target===document.getElementById('tokenModal'))closeTokenModal();});
 document.getElementById('privRevealModal').addEventListener('click',e=>{if(e.target===document.getElementById('privRevealModal'))document.getElementById('privRevealModal').classList.remove('open');});
@@ -919,17 +956,19 @@ function mkGrid(f,i){
   d.className='fcard';d.id=`card-${f._id}`;d.style.animationDelay=`${i*.05}s`;
   d.innerHTML=`
     <div class="cthumb" onclick="${canP?`openPrev('${f._id}')`:''}" style="cursor:${canP?'pointer':'default'}">
+      ${isRecent(f.createdAt)?'<span class="new-badge">NEW</span>':''}
       ${mkThumb(f)}
-      ${canP?`<div class="cover"><span>${f.originalName}</span></div>`:''}
+      ${canP?`<div class="cover"><span>${esc(stripExt(f.originalName))}</span></div>`:''}
       <span class="thbadge tb-${type}">${label}</span>
     </div>
     <div class="cbody">
-      <div class="cname" title="${esc(f.originalName)}">${esc(f.originalName)}</div>
+      <div class="cname" title="${esc(f.originalName)}">${esc(stripExt(f.originalName))}</div>
       <div class="cmeta"><span class="tpill tp-${type}">${label}</span><span class="dot"></span><span>${fmtSz(f.fileSize)}</span><span class="dot"></span><span>${fmtDt(f.createdAt)}</span><span class="dot"></span><span class="vis-badge vis-${v==='public'?'pub':'priv'}">${v==='public'?'Public':'Private'}</span></div>
       <div class="cact-row">
         <button class="cact" title="Download" onclick="dlFile('${f._id}','${esc(f.originalName)}')"><svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg></button>
         <button class="cact" title="Copy Token" onclick="copyToken('${f.shareToken||''}')"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></button>
         <button class="cact" title="Properties" onclick="showProp('${f._id}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></button>
+        <button class="cact" title="Rename" onclick="renameFilePr('${f._id}','${esc(f.originalName)}')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
         <div class="cact-sep"></div>
         <button class="cact cact-vis-${v==='public'?'pub':'priv'}" id="visBtn-${f._id}" title="${v==='public'?'Make private':'Click to make public'}" onclick="toggleVis('${f._id}','${v}')">${v==='public'?'<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>':'<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>'}</button>
         <button class="cact" title="${(folderCtx||f.folderId)?'Remove from folder':'Add to folder'}" onclick="${(folderCtx||f.folderId)?`removeFromFolder('${folderCtx||f.folderId}','${f._id}')`:`showAtf('${f._id}')`}"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></button>
@@ -948,13 +987,14 @@ function mkList(f,i){
     <div class="lrow">
       <div class="lthumb" onclick="${canP?`openPrev('${f._id}')`:''}" style="cursor:${canP?'pointer':'default'}">${mkLThumb(f)}</div>
       <div class="linfo">
-        <div class="lname">${esc(f.originalName)}</div>
+        <div class="lname" title="${esc(f.originalName)}">${esc(stripExt(f.originalName))}${isRecent(f.createdAt)?'<span class="new-badge-list">NEW</span>':''}</div>
         <div class="lmeta"><span class="tpill tp-${type}">${label}</span><span>${fmtSz(f.fileSize)}</span><span>·</span><span>${fmtDt(f.createdAt)}</span><span class="vis-badge vis-${v==='public'?'pub':'priv'}">${v==='public'?'Public':'Private'}</span></div>
       </div>
       <div class="lacts">
         <button class="lact la-dl" title="Download" onclick="dlFile('${f._id}','${esc(f.originalName)}')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/></svg></button>
         <button class="lact la-tok" title="Copy Token" onclick="copyToken('${f.shareToken||''}')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></button>
         <button class="lact" title="Properties" onclick="showProp('${f._id}')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></button>
+        <button class="lact" title="Rename" onclick="renameFilePr('${f._id}','${esc(f.originalName)}')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
         <button class="lact la-vis-${v==='public'?'pub':'priv'}" id="visBtn-${f._id}" title="${v==='public'?'Public — click to make private':'Private — click to make public'}" onclick="toggleVis('${f._id}','${v}')">${v==='public'?'<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>':'<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>'}</button>
         <button class="lact ${(folderCtx||f.folderId)?'la-rmfolder':'la-folder'}" title="${(folderCtx||f.folderId)?'Remove from folder':'Add to folder'}" onclick="${(folderCtx||f.folderId)?`removeFromFolder('${folderCtx||f.folderId}','${f._id}')`:`showAtf('${f._id}')`}"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></button>
         <button class="lact la-del" title="Delete" onclick="delFile('${f._id}','${esc(f.originalName)}')"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
@@ -990,7 +1030,7 @@ function openPrev(id){
   if(isImg(f.fileType)){img.src=src;img.style.display='block';}
   else if(isVid(f.fileType)){vid.src=src;vid.style.display='block';}
   else return;
-  info.textContent=`${f.originalName} · ${tl(f.fileType)} · ${fmtSz(f.fileSize)}`;
+  info.textContent=`${stripExt(f.originalName)} · ${tl(f.fileType)} · ${fmtSz(f.fileSize)}`;
   document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';
 }
 function closeLB(){
@@ -1019,19 +1059,37 @@ function dlFile(id,name){
 
 // ── DELETE ─────────────────────────────────────────────────────────────────
 let pendingId=null;
-function delFile(id,name){pendingId=id;document.getElementById('delFname').textContent=name||'This file';document.getElementById('delModal').classList.add('open');}
+function delFile(id,name){pendingId=id;document.getElementById('delFname').textContent=stripExt(name)||'This file';document.getElementById('delModal').classList.add('open');}
 document.getElementById('delCancel').onclick=()=>{pendingId=null;document.getElementById('delModal').classList.remove('open');};
-document.getElementById('delConfirm').onclick=async()=>{
+document.getElementById('delConfirm').onclick=()=>{
   if(!pendingId)return;
-  const id=pendingId;pendingId=null;document.getElementById('delModal').classList.remove('open');
+  const id=pendingId;const fname=document.getElementById('delFname').textContent||'File';
+  pendingId=null;document.getElementById('delModal').classList.remove('open');
   const card=document.getElementById(`card-${id}`);
-  try{
-    const res=await fetch(`${API}/${id}`,{method:'DELETE'});
-    if(!res.ok){const d=await res.json().catch(()=>({}));throw new Error(d.message||'Failed');}
-    allFiles=allFiles.filter(f=>f._id!==id);
-    if(card){card.style.animation='delOut .3s var(--ease) forwards';setTimeout(()=>{card.remove();renderAll();document.getElementById('badge').textContent=`${allFiles.length} file${allFiles.length!==1?'s':''}`;},320);}
-    toast('File deleted','success');
-  }catch(e){toast(e.message||'Delete failed','error');}
+  // Capture full objects BEFORE removing so Undo can restore them exactly as they were.
+  const fileObj=allFiles.find(f=>f._id===id);
+  const folderFileObj=curFolder?(curFolder.files||[]).find(f=>f._id===id):null;
+  // Optimistic removal — nothing is sent to the server yet. The actual DELETE
+  // only fires if the undo window expires without the user clicking Undo.
+  allFiles=allFiles.filter(f=>f._id!==id);
+  if(curFolder)curFolder.files=(curFolder.files||[]).filter(f=>f._id!==id);
+  if(card){card.style.animation='delOut .3s var(--ease) forwards';setTimeout(()=>{card.remove();renderAll();document.getElementById('badge').textContent=`${allFiles.length} file${allFiles.length!==1?'s':''}`;},320);}
+  toastUndo(`"${fname}" deleted`,
+    async()=>{ // window expired — commit the real delete now
+      try{
+        const res=await fetch(`${API}/${id}`,{method:'DELETE'});
+        if(!res.ok){const d=await res.json().catch(()=>({}));throw new Error(d.message||'Failed');}
+      }catch(e){toast(e.message||'Delete failed','error');}
+    },
+    ()=>{ // user clicked Undo — nothing was ever sent to the server, just restore the UI
+      if(fileObj)allFiles.unshift(fileObj);
+      if(folderFileObj&&curFolder)curFolder.files=[folderFileObj,...(curFolder.files||[])];
+      renderAll();
+      if(curFolder)renderFolders();
+      document.getElementById('badge').textContent=`${allFiles.length} file${allFiles.length!==1?'s':''}`;
+      toast('Restored','success');
+    }
+  );
 };
 document.getElementById('delModal').addEventListener('click',e=>{if(e.target===document.getElementById('delModal')){pendingId=null;document.getElementById('delModal').classList.remove('open');}});
 
@@ -1071,9 +1129,33 @@ function toast(msg,type='info'){
   document.getElementById('toasts').appendChild(el);
   setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),220);},2800);
 }
+// Like toast(), but holds an action open for a window before committing it —
+// used for soft-delete: nothing destructive happens until the timer expires.
+function toastUndo(msg,onExpire,onUndo,duration=5000){
+  const el=document.createElement('div');el.className='toast info';
+  const btnId='u'+Math.random().toString(36).slice(2,9);
+  el.innerHTML=`<span class="td"></span>${msg}<button class="toast-undo-btn" id="${btnId}">Undo</button>`;
+  document.getElementById('toasts').appendChild(el);
+  let settled=false;
+  const timer=setTimeout(()=>{
+    if(settled)return;settled=true;
+    el.classList.add('out');setTimeout(()=>el.remove(),220);
+    onExpire();
+  },duration);
+  document.getElementById(btnId).onclick=()=>{
+    if(settled)return;settled=true;clearTimeout(timer);
+    el.classList.add('out');setTimeout(()=>el.remove(),220);
+    onUndo();
+  };
+}
 function fmtSz(b){if(!b)return'–';if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB'}
 function fmtDt(d){if(!d)return'';return new Date(d).toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'})}
 function esc(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function isRecent(d){return d&&(Date.now()-new Date(d).getTime())<10*60*1000;} // uploaded in the last 10 minutes
+// Display-only helpers — the real filename (with extension) is always kept
+// for downloads/storage; only what's SHOWN to the user drops the extension.
+function getExt(name){if(!name)return'';const i=name.lastIndexOf('.');return i>0?name.slice(i):'';}
+function stripExt(name){if(!name)return name;const i=name.lastIndexOf('.');return i>0?name.slice(0,i):name;}
 
 async function accessByToken(){
   const input=document.getElementById('tInput');
@@ -1108,9 +1190,9 @@ function openTokenModal(data,kind){
       file:`<svg viewBox="0 0 24 24" fill="none" stroke="${stMap[t]}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>`
     };
     const v=f.visibility||'public';
-    hd.innerHTML=`<div class="tmodal-ico" style="background:${bgMap[t]||bgMap.file}">${svgMap[t]||svgMap.file}</div><div class="tmodal-head-info"><div class="tmodal-title">${esc(f.originalName)}</div><div class="tmodal-sub">${typeHuman(f.fileType)}<span class="vis-badge vis-${v==='public'?'pub':'priv'}">${v==='public'?'Public':'Private'}</span></div></div>`;
+    hd.innerHTML=`<div class="tmodal-ico" style="background:${bgMap[t]||bgMap.file}">${svgMap[t]||svgMap.file}</div><div class="tmodal-head-info"><div class="tmodal-title" title="${esc(f.originalName)}">${esc(stripExt(f.originalName))}</div><div class="tmodal-sub">${typeHuman(f.fileType)}<span class="vis-badge vis-${v==='public'?'pub':'priv'}">${v==='public'?'Public':'Private'}</span></div></div>`;
     bd.innerHTML=`<div class="prop-row"><span class="prop-key">Size</span><span class="prop-val">${fmtSz(f.fileSize)}</span></div><div class="prop-row"><span class="prop-key">Type</span><span class="prop-val">${typeHuman(f.fileType)}</span></div><div class="prop-row"><span class="prop-key">Uploaded</span><span class="prop-val">${f.createdAt?new Date(f.createdAt).toLocaleString('en',{dateStyle:'medium',timeStyle:'short'}):'-'}</span></div>`;
-    ft.innerHTML=`<button class="tmod-act tmod-dl" title="Download" onclick="dlFile('${f._id}','${esc(f.originalName)}')"><svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg></button>${f.visibility==='private'?`<div class="tmod-sep"></div><button class="tmod-act tmod-pub" title="Make Public" onclick="makeFilePublic('${f._id}')"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg></button><button class="tmod-act tmod-del" title="Delete File" onclick="delFileFromModal('${f._id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>`:''}` ;
+    ft.innerHTML=`<button class="tmod-act tmod-dl" title="Download" onclick="dlFile('${f._id}','${esc(f.originalName)}')"><svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg></button>${f.visibility==='private'?`<button class="tmod-act" title="Manage Sharing" onclick="openSharePanel('file')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg></button><div class="tmod-sep"></div><button class="tmod-act tmod-pub" title="Make Public" onclick="makeFilePublic('${f._id}')"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg></button><button class="tmod-act tmod-del" title="Delete File" onclick="delFileFromModal('${f._id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>`:''}` ;
     // Store in tokenModalFile so openPrev can access private file data without polluting allFiles
     tokenModalFile=f;
   }else{
@@ -1120,12 +1202,45 @@ function openTokenModal(data,kind){
     const files=(folder.files||[]).filter(x=>(x.visibility||'public')!=='private');
     hd.innerHTML=`<div class="tmodal-ico" style="background:var(--ylws)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ylw)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div><div class="tmodal-head-info"><div class="tmodal-title">${esc(folder.name)}</div><div class="tmodal-sub">${files.length} file${files.length!==1?'s':''}<span class="vis-badge vis-${folder.visibility==='public'?'pub':'priv'}">${folder.visibility==='public'?'Public':'Private'}</span></div></div>`;
     bd.innerHTML=files.length
-      ?`<div class="tmodal-file-list">${files.map(f=>`<div class="tmodal-file-row"><span class="tmodal-file-name">${esc(f.originalName)}</span><span class="tmodal-file-meta">${fmtSz(f.fileSize)}</span><button class="tmodal-dl-btn" onclick="dlFile('${f._id}','${esc(f.originalName)}')" title="Download"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/></svg></button></div>`).join('')}</div>`
+      ?`<div class="tmodal-file-list">${files.map(f=>`<div class="tmodal-file-row"><span class="tmodal-file-name" title="${esc(f.originalName)}">${esc(stripExt(f.originalName))}</span><span class="tmodal-file-meta">${fmtSz(f.fileSize)}</span><button class="tmodal-dl-btn" onclick="dlFile('${f._id}','${esc(f.originalName)}')" title="Download"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/></svg></button></div>`).join('')}</div>`
       :`<div style="text-align:center;padding:24px;color:var(--t3);font-size:14px">This folder is empty</div>`;
-    ft.innerHTML=`${folder.visibility==='private'?`<button class="tmod-act tmod-pub" title="Make Folder Public" onclick="makeFolderPublic('${folder._id}')"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg></button><div class="tmod-sep"></div><button class="tmod-act tmod-del" title="Delete Folder" onclick="delFolderFromModal('${folder._id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>`:''}`;
+    ft.innerHTML=`${files.length?`<button class="tmod-act" title="Download All as ZIP" onclick="downloadFolderZipFromModal()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>`:''}${folder.visibility==='private'?`<button class="tmod-act" title="Manage Sharing" onclick="openSharePanel('folder')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg></button><div class="tmod-sep"></div><button class="tmod-act tmod-pub" title="Make Folder Public" onclick="makeFolderPublic('${folder._id}')"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg></button><button class="tmod-act tmod-del" title="Delete Folder" onclick="delFolderFromModal('${folder._id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>`:''}`;
     tokenModalFolder=folder; // store so delFolderFromModal can read folder name
   }
   document.getElementById('tokenModal').classList.add('open');
+}
+// Opens the same reveal-style panel used right after going private, but on-demand —
+// reads from tokenModalFile/tokenModalFolder (already populated by openTokenModal),
+// so it always reflects the CURRENT token + expiry, not a stale snapshot.
+function fmtExpiryStatus(expiresAt){
+  if(!expiresAt)return'Never';
+  const diff=new Date(expiresAt)-new Date();
+  if(diff<=0)return'Expired';
+  const hrs=diff/3600000;
+  return hrs<24?`${Math.round(hrs)}h left`:`${Math.round(hrs/24)}d left`;
+}
+function openSharePanel(type){
+  const item=type==='folder'?tokenModalFolder:tokenModalFile;
+  if(!item)return;
+  // Close the Token Modal first — otherwise it stacks underneath privRevealModal
+  // (double backdrop, confusing to dismiss). `item` is already captured above.
+  document.getElementById('tokenModal').classList.remove('open');
+  tokenModalFile=null;tokenModalFolder=null;
+  privRevealCtx={id:item._id,type};
+  document.getElementById('prm-title').textContent=type==='folder'?'Manage Folder Sharing':'Manage File Sharing';
+  document.getElementById('prm-sub').textContent="Update this token\'s expiry, or share it again";
+  document.getElementById('prm-token').textContent=item.shareToken||'';
+  document.getElementById('prm-expiry-status').textContent=fmtExpiryStatus(item.tokenExpiresAt);
+  document.getElementById('privRevealModal').classList.add('open');
+}
+function downloadFolderZipFromModal(){
+  if(!tokenModalFolder)return;
+  const id=tokenModalFolder._id;
+  const url=tokenModalFolder.visibility==='private'
+    ?`${FOLDERS_API}/${id}/zip?token=${tokenModalFolder.shareToken}`
+    :`${FOLDERS_API}/${id}/zip`;
+  const a=document.createElement('a');a.href=url;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('Preparing ZIP…','info');
 }
 function closeTokenModal(){
   document.getElementById('tokenModal').classList.remove('open');
@@ -1156,12 +1271,16 @@ function renderFolders(){
   const grid=document.getElementById('folderGrid');
   const crumb=document.getElementById('folderCrumb');
   const btnNew=document.getElementById('btnNewFolder');
+  const searchInput=document.getElementById('folderSearchInput');
+  const btnZip=document.getElementById('btnDownloadAllZip');
   if(curFolder){
     // Defensive filter: backend already excludes private files via populate match,
     // but we filter again here in case of any stale cached data.
     const files=(curFolder.files||[]).filter(x=>(x.visibility||'public')!=='private');
     crumb.innerHTML=`<button class="crumb-back" onclick="backToFolders()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><span class="crumb-sep">Folders</span><span style="color:var(--t3);margin:0 4px">/</span><span>${esc(curFolder.name)}</span>`;
     btnNew.style.display='none';
+    searchInput.style.display='none'; // searching folder names doesn't apply once you're inside one
+    btnZip.style.display=files.length?'':'none';
     folderCtx=curFolder._id;
     if(!files.length){
       grid.className='';
@@ -1174,16 +1293,31 @@ function renderFolders(){
   }else{
     crumb.textContent='All Folders';
     btnNew.style.display='';
+    searchInput.style.display='';
+    btnZip.style.display='none';
     folderCtx=null;
+    const q=folderSearchQ.toLowerCase();
+    const visibleFolders=q?allFolders.filter(f=>f.name.toLowerCase().includes(q)):allFolders;
     if(!allFolders.length){
       grid.className='';
       grid.innerHTML=`<div class="folder-empty"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg><p>No folders yet.<br>Hit <strong>+ New Folder</strong> to create one.</p></div>`;
+    }else if(!visibleFolders.length){
+      grid.className='';
+      grid.innerHTML=`<div class="folder-empty"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>No folders match "${esc(folderSearchQ)}".</p></div>`;
     }else{
       grid.className='fol-grid';
       grid.innerHTML='';
-      allFolders.forEach((f,i)=>grid.appendChild(mkFolderCard(f,i)));
+      visibleFolders.forEach((f,i)=>grid.appendChild(mkFolderCard(f,i)));
     }
   }
+}
+function downloadCurFolderZip(){
+  if(!curFolder)return;
+  const url=curFolder.visibility==='private'
+    ?`${FOLDERS_API}/${curFolder._id}/zip?token=${curFolder.shareToken}`
+    :`${FOLDERS_API}/${curFolder._id}/zip`;
+  const a=document.createElement('a');a.href=url;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('Preparing ZIP…','info');
 }
 function mkFolderCard(f,i){
   const cnt=f.fileCount!==undefined?f.fileCount:(f.files?f.files.length:0);
@@ -1369,9 +1503,11 @@ async function toggleVis(id,currentVis){
     const card=document.getElementById(`card-${id}`);
     if(card){card.style.animation='delOut .3s var(--ease) forwards';setTimeout(()=>{card.remove();const n=allFiles.length;document.getElementById('badge').textContent=`${n} file${n!==1?'s':''}`;},320);}
     // Show token reveal popup + auto-copy
+    privRevealCtx={id,type:'file'};
     document.getElementById('prm-title').textContent='File is now Private 🔒';
     document.getElementById('prm-sub').textContent="Save this token — it\'s the only way to access this file";
     document.getElementById('prm-token').textContent=token;
+    document.getElementById('prm-expiry-status').textContent='Never';
     document.getElementById('privRevealModal').classList.add('open');
     try{await navigator.clipboard.writeText(token);}catch{/* user can copy manually */}
   }catch(e){toast(e.message||'Failed to update visibility','error');}
@@ -1381,6 +1517,54 @@ function copyPrivToken(){
   const token=document.getElementById('prm-token').textContent;
   if(!token)return;
   navigator.clipboard.writeText(token).then(()=>toast('Token copied ✓','success')).catch(()=>toast('Token: '+token,'info'));
+}
+function fmtExpiry(minutes){
+  if(!minutes||minutes<=0)return'never';
+  if(minutes<60)return`${minutes}m`;
+  if(minutes<1440)return`${Math.round(minutes/60)}h`;
+  return`${Math.round(minutes/1440)}d`;
+}
+async function setPrivExpiry(minutes){
+  if(!privRevealCtx.id)return;
+  const apiBase=privRevealCtx.type==='folder'?FOLDERS_API:API;
+  try{
+    const res=await fetch(`${apiBase}/${privRevealCtx.id}/visibility`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({visibility:'private',expiresIn:minutes})});
+    if(!res.ok)throw new Error();
+    const d=await res.json();
+    const newExpiry=(d.file||d.folder)?.tokenExpiresAt??null;
+    // Defensive: keep any still-cached references in sync, in case some future
+    // code path reads them without a fresh fetch first.
+    if(tokenModalFile&&tokenModalFile._id===privRevealCtx.id)tokenModalFile.tokenExpiresAt=newExpiry;
+    if(tokenModalFolder&&tokenModalFolder._id===privRevealCtx.id)tokenModalFolder.tokenExpiresAt=newExpiry;
+    if(curFolder&&curFolder._id===privRevealCtx.id)curFolder.tokenExpiresAt=newExpiry;
+    document.getElementById('prm-expiry-status').textContent=minutes>0?`${fmtExpiry(minutes)} left`:'Never';
+    toast(minutes>0?`Token now expires in ${fmtExpiry(minutes)}`:'Token will never expire','success');
+  }catch{toast('Failed to update expiry','error');}
+}
+async function regenPrivToken(){
+  if(!privRevealCtx.id)return;
+  const apiBase=privRevealCtx.type==='folder'?FOLDERS_API:API;
+  try{
+    const res=await fetch(`${apiBase}/${privRevealCtx.id}/visibility`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({visibility:'private',regenerateToken:true})});
+    if(!res.ok)throw new Error();
+    const d=await res.json();
+    const item=d.file||d.folder;
+    if(!item?.shareToken){toast('Server did not return a new token','error');return;}
+    document.getElementById('prm-token').textContent=item.shareToken;
+    // Defensive: keep any still-cached references in sync, in case some future
+    // code path reads them without a fresh fetch first.
+    if(tokenModalFile&&tokenModalFile._id===privRevealCtx.id)tokenModalFile.shareToken=item.shareToken;
+    if(tokenModalFolder&&tokenModalFolder._id===privRevealCtx.id)tokenModalFolder.shareToken=item.shareToken;
+    if(curFolder&&curFolder._id===privRevealCtx.id)curFolder.shareToken=item.shareToken;
+    try{await navigator.clipboard.writeText(item.shareToken);}catch{}
+    toast('New token generated & copied — the old one no longer works','success');
+  }catch{toast('Failed to regenerate token','error');}
+}
+function copyPrivLink(){
+  const token=document.getElementById('prm-token').textContent;
+  if(!token)return;
+  const link=`${window.location.origin}${window.location.pathname}?token=${token}`;
+  navigator.clipboard.writeText(link).then(()=>toast('Link copied ✓ — opening it auto-fills the token','success')).catch(()=>toast('Link: '+link,'info'));
 }
 async function toggleFolderVis(id,currentVis){
   if(currentVis!=='public')return;
@@ -1395,9 +1579,11 @@ async function toggleFolderVis(id,currentVis){
     // Also remove this folder's files from the gallery immediately
     allFiles=allFiles.filter(f=>!f.folderId||f.folderId.toString()!==id);
     renderFolders();renderAll();
+    privRevealCtx={id,type:'folder'};
     document.getElementById('prm-title').textContent='Folder is now Private 🔒';
     document.getElementById('prm-sub').textContent="Save this token — it\'s the only way to access this folder";
     document.getElementById('prm-token').textContent=token;
+    document.getElementById('prm-expiry-status').textContent='Never';
     document.getElementById('privRevealModal').classList.add('open');
     try{await navigator.clipboard.writeText(token);}catch{/* user can copy manually */}
   }catch(e){toast(e.message||'Failed to update folder visibility','error');}
@@ -1411,6 +1597,23 @@ function delFileFromModal(id){
   setTimeout(()=>delFile(id,name),150);
 }
 // Restore a private file to public — adds it back to allFiles and re-renders gallery
+async function renameFilePr(id,currentName){
+  // The extension is preserved silently — the user only ever sees/types the base name.
+  const ext=getExt(currentName);
+  const base=stripExt(currentName);
+  const newBase=prompt('Rename file:',base);
+  if(!newBase||!newBase.trim()||newBase.trim()===base)return;
+  const fullName=newBase.trim()+ext;
+  try{
+    const res=await fetch(`${API}/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:fullName})});
+    if(!res.ok)throw new Error();
+    const f1=allFiles.find(x=>x._id===id);if(f1)f1.originalName=fullName;
+    if(curFolder){const f2=(curFolder.files||[]).find(x=>x._id===id);if(f2)f2.originalName=fullName;}
+    renderAll();
+    if(curFolder)renderFolders();
+    toast('Renamed!','success');
+  }catch{toast('Rename failed','error');}
+}
 async function makeFilePublic(id){
   try{
     const res=await fetch(`${API}/${id}/visibility`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({visibility:'public'})});
@@ -1442,6 +1645,18 @@ async function makeFolderPublic(id){
 }
 
 loadFiles();
+
+// ── Token deep-link: ?token=XXXX in the URL auto-fills and triggers access ──
+// Generated by "Copy shareable link" in the private-reveal popup — same token
+// system underneath, just a convenience so the recipient doesn't have to
+// manually copy-paste the raw token into the input box.
+(function(){
+  const t=new URLSearchParams(window.location.search).get('token');
+  if(!t)return;
+  const input=document.getElementById('tInput');
+  if(input)input.value=t;
+  setTimeout(()=>accessByToken(),350);
+})();
 </script>
 </body>
 </html>

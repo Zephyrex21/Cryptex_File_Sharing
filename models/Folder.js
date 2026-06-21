@@ -28,6 +28,9 @@ const folderSchema = new mongoose.Schema(
       default: "public",
     },
 
+    // Same expiry rule as File — null means never expires.
+    tokenExpiresAt: { type: Date, default: null },
+
     // Array of File _ids that belong to this folder
     files: [
       {
