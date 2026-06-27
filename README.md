@@ -150,17 +150,6 @@ PORT=3000
 
 ---
 
-## Future Improvements
-
-- User authentication
-- User-specific storage spaces
-- Expiring share links
-- Password-protected shares
-- File versioning
-- Storage analytics dashboard
-
----
-
 ## Author
 
 Built by Saurabh Raj Shekhar using MERN Stack and Supabase Storage.
